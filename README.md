@@ -9,7 +9,7 @@ The following paper is based on the presented model: [Arbeiter, S., Roth, T., He
 The repository contains the following documents
 
 ## Scripts
-# ##Run_MCMC.R: R-Script to perform the MCMC analyses
+###Run_MCMC.R: R-Script to perform the MCMC analyses
 
 With this script 
 - the data are loaded from the `RData` folder, 
