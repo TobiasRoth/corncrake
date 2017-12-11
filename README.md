@@ -1,9 +1,8 @@
 # Analyses of Corncrake calling site occupancy at the Lower Oder Valley National Park in northeastern Germany
 
-The repository contains JAGS code for the occupancy model that allows for staggered arrival and departure times. The occupancy model estimates within-season movements of male Corncrakes and analyses how departure probabilities and calling site occupancy is affected by land use. 
+The repository contains BUGS code for the occupancy model that allows for staggered arrival and departure times. The occupancy model estimates within-season movements of male Corncrakes and analyses how departure probabilities and calling site occupancy is affected by land use. 
 
 The model is based on [Kendall, W. L., Hines, J. E., Nichols, J. D., & Grant, E. H. C. (2013). Relaxing the closure assumption in occupancy models: staggered arrival and departure times. *Ecology*, 94(3), 610-617.](http://onlinelibrary.wiley.com/doi/10.1890/12-1720.1/full)
-
 
 The following papers are based on the presented model: 
 
