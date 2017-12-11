@@ -6,7 +6,7 @@
 #		
 #******************************************************************************
 
-rm(list=ls(all=TRUE))
+rm(list = ls(all = TRUE))
 
 #---------------------------------------------------------------------------------------------------
 # Settings
@@ -25,12 +25,19 @@ post <- data.frame(rbind(mod[[1]], mod[[2]]))
 names(post) <- dimnames(mod[[1]])[[2]]
 
 par(mfrow = c(3,2))
-param <- c("mu.a0[1]", "a1", "a2", "a3", "beta[2,1]", "beta[6,1]")
+param <- c("mu.a0[1]", "a1", "a2", "beta[2,1]", "beta[6,1]")
 traceplot(mod[, match(param, names(post))])
 
 par(mfrow = c(3,2))
 param <- c("mu.alpha0[2]", "mu.alpha0[6]", "alpha1", "mu.p", "p1", "p3")
 traceplot(mod[, match(param, names(post))])
+
+#---------------------------------------------------------------------------------------------------
+# Results for table (estimate and CrI)
+#---------------------------------------------------------------------------------------------------
+r <- summary(mod)
+round(r$quantiles[c("mu.a0[1]", "mu.a0[2]", "sd.a0", "a1", "a2", "alpha1", "mu.p", "sd.p", "p1", "p2"), 
+                  c("50%", "2.5%", "97.5%")], 2)
 
 #---------------------------------------------------------------------------------------------------
 # Fig: Effect of management on departure probability at visit j
@@ -41,7 +48,7 @@ pdf("Fig_1_managementeffect_on_departure_10T.pdf", width = 4, height = 5)
 par(mfrow = c(1,1), mar = c(3,5,1,1))
 txmin <- 0.5
 tymin <- 0
-plot(NA, xlim = c(txmin, 2+txmin), ylim = c(tymin,1), axes = FALSE, xlab = "", ylab = "")
+plot(NA, xlim = c(txmin, 2 + txmin), ylim = c(tymin,1), axes = FALSE, xlab = "", ylab = "")
 axis(1, at = 1:2, labels = rep("", 2), pos = tymin)
 mtext(c("Without", "With"), side = 1, at = 1:2, line = 0.5, cex = 1)
 mtext(c("management"), side = 1, at = 1.5, line = 1.5, cex = 1)
@@ -49,7 +56,7 @@ axis(2, las = 1, pos = txmin)
 mtext("Departure probability", 2, line = 3.5)
 mtext("(between 3 July and 12 July)", 2, line = 2.7, cex = 0.8)
 lines(c(txmin,1), c(tymin, tymin))
-lines(c(2, 2+txmin), c(tymin, tymin))
+lines(c(2, 2 + txmin), c(tymin, tymin))
 tt <- cbind(
   plogis(post[,paste("mu.alpha0[", j, "]", sep = "")]),
   plogis(post[,paste("mu.alpha0[", j, "]", sep = "")] + post$alpha1)
@@ -67,7 +74,7 @@ dev.off()
 nyear <- 20
 pdf("Fig_2_managementeffect_on_callingsiteoccupancy_10T.pdf", width = 8, height = 5)
 par(mfrow = c(1,1), mar = c(3,5,1,1))
-plot(NA, xlim = c(0, nyear+1), ylim = c(0,1), axes = FALSE, xlab = "", ylab = "")
+plot(NA, xlim = c(0, nyear + 1), ylim = c(0,1), axes = FALSE, xlab = "", ylab = "")
 axis(1, at = 1:nyear, labels = rep("", nyear), pos = 0)
 mtext(1:nyear, side = 1, at = 1:nyear, cex = 0.8, line = 0.2)
 mtext("Years since last management", side = 1, line = 1.5)
@@ -75,9 +82,9 @@ axis(2, las = 1, pos = 0)
 mtext("Calling site occupancy", side = 2, line = 3.5)
 mtext("(prob. that a calling site is occupied once during the season)", 2, line = 2.7, cex = 0.8)
 lines(c(0,1), c(0,0))
-lines(c(nyear,nyear+1), c(0,0))
-tyr <- data.frame(yr=1:nyear)
-for(t in 1:nrow(tyr)){
+lines(c(nyear,nyear + 1), c(0,0))
+tyr <- data.frame(yr = 1:nyear)
+for (t in 1:nrow(tyr)) {
   tt <- plogis(post$`mu.a0[2]` + post$a2 * tyr$yr[t]) #+ post$a3 * tyr$yr[t]^2)
   tyr[t, "median"] <- median(tt)
   tyr[t, "low"] <- quantile(tt, probs = 0.025)
@@ -275,21 +282,21 @@ tcol <- brewer.pal(11,"RdYlBu")[c(1:3,8:11)]
 # 1. Periode
 tt <- post[, paste("alpha0[",1:9, ",", 1, "]", sep = "")] + post[, paste("alpha0[",1:9, ",", 2, "]", sep = "")] + post[, paste("alpha0[",1:9, ",", 3, "]", sep = "")]
 tt <- tt / 3
-for(u in 1:ncol(tt)) tt[, u] <- plogis(tt[, u])
-segments(meandat[2:8], apply(tt[2:8], 2, quantile, probs=0.025), meandat[2:8], apply(tt[2:8], 2, quantile, probs=0.975), col = tcol[2])
+for (u in 1:ncol(tt)) tt[, u] <- plogis(tt[, u])
+segments(meandat[2:8], apply(tt[2:8], 2, quantile, probs = 0.025), meandat[2:8], apply(tt[2:8], 2, quantile, probs = 0.975), col = tcol[2])
 points(meandat[2:8], apply(tt[2:8], 2, mean), pch = 16, ty = "b", col = tcol[2])
 res[, "1998-2000_mean"] <- apply(tt[2:8], 2, mean)
-res[, "1998-2000_low"] <- apply(tt[2:8], 2, quantile, probs=0.025)
-res[, "1998-2000_up"] <- apply(tt[2:8], 2, quantile, probs=0.975)
+res[, "1998-2000_low"] <- apply(tt[2:8], 2, quantile, probs = 0.025)
+res[, "1998-2000_up"] <- apply(tt[2:8], 2, quantile, probs = 0.975)
 # 2. Periode
 tt <- post[, paste("alpha0[",1:9, ",", 4, "]", sep = "")] + post[, paste("alpha0[",1:9, ",", 5, "]", sep = "")] + post[, paste("alpha0[",1:9, ",", 6, "]", sep = "")] + post[, paste("alpha0[",1:9, ",", 7, "]", sep = "")]
 tt <- tt / 4
-for(u in 1:ncol(tt)) tt[, u] <- plogis(tt[, u])
-segments(meandat[2:8], apply(tt[2:8], 2, quantile, probs=0.025), meandat[2:8], apply(tt[2:8], 2, quantile, probs=0.975), col = tcol[7])
+for (u in 1:ncol(tt)) tt[, u] <- plogis(tt[, u])
+segments(meandat[2:8], apply(tt[2:8], 2, quantile, probs = 0.025), meandat[2:8], apply(tt[2:8], 2, quantile, probs = 0.975), col = tcol[7])
 points(meandat[2:8], apply(tt[2:8], 2, mean), pch = 16, ty = "b", col = tcol[7])
 res[, "2012-2015_mean"] <- apply(tt[2:8], 2, mean)
-res[, "2012-2015_low"] <- apply(tt[2:8], 2, quantile, probs=0.025)
-res[, "2012-2015_up"] <- apply(tt[2:8], 2, quantile, probs=0.975)
+res[, "2012-2015_low"] <- apply(tt[2:8], 2, quantile, probs = 0.025)
+res[, "2012-2015_up"] <- apply(tt[2:8], 2, quantile, probs = 0.975)
 legend(5, 1, c("1998-2000", "2012-2015"), col = tcol[c(2,7)], pch = 16, bty = "n", cex = 0.8)
 dev.off()
 
